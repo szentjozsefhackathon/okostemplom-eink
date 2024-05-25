@@ -6,64 +6,62 @@
 
 #define LILYGO_T5_V213
 
-
-#include <boards.h>
 #include <GxEPD.h>
-
-#include <GxDEPG0213BN/GxDEPG0213BN.h>    // 2.13" b/w  form DKE GROUP
+#include <GxDEPG0213BN/GxDEPG0213BN.h>  // 2.13" b/w  form DKE GROUP
+#include <boards.h>
 
 #include GxEPD_BitmapExamples
-// FreeFonts from Adafruit_GFX
-#include <Fonts/FreeMonoBold9pt7b.h>
-#include <Fonts/FreeMonoBold12pt7b.h>
-#include <Fonts/FreeMonoBold18pt7b.h>
-#include <GxIO/GxIO_SPI/GxIO_SPI.h>
+#include <Adafruit_GFX.h>
+#include <U8g2_for_Adafruit_GFX.h>
 #include <GxIO/GxIO.h>
+#include <GxIO/GxIO_SPI/GxIO_SPI.h>
 
-
-GxIO_Class io(SPI,  EPD_CS, EPD_DC,  EPD_RSET);
+GxIO_Class io(SPI, EPD_CS, EPD_DC, EPD_RSET);
 GxEPD_Class display(io, EPD_RSET, EPD_BUSY);
+U8G2_FOR_ADAFRUIT_GFX u8Display;
 
-void LilyGo_logo();
+int16_t displayWidth = 0;
+int16_t displayHeight = 0;
+int8_t lineHeight = 0;
 
+void displayHackathonLogo();
 
-void setup(void)
-{
+void setupFont(U8G2_FOR_ADAFRUIT_GFX& u8Display, const uint8_t* font) {
+    u8Display.setFontMode(1);       // use u8g2 transparent mode (this is default)
+    u8Display.setFontDirection(0);  // left to right (this is default)
+    u8Display.setForegroundColor(GxEPD_BLACK);
+    u8Display.setBackgroundColor(GxEPD_WHITE);
+    u8Display.setFont(font);
+}
+
+void setup(void) {
     Serial.begin(115200);
     Serial.println();
     Serial.println("setup");
 
     SPI.begin(EPD_SCLK, EPD_MISO, EPD_MOSI);
-    display.init(); // enable diagnostic output on Serial
+    display.init();  // enable diagnostic output on Serial
+    u8Display.begin(display);
 
-    LilyGo_logo();
+
     Serial.println("setup done");
     display.setRotation(1);
-    display.fillScreen(GxEPD_WHITE);
-    display.setTextColor(GxEPD_BLACK);
-    display.setFont(&FreeMonoBold9pt7b);
-    display.setCursor(0, 15);
-    display.println("<3");
-    display.println("Hello, Szent Jozsef");
-    display.println(" Hackathon v2.0");
-    display.println(" | ");
-    display.println("-+-");
-    display.println(" | ");
+    displayWidth = display.width();
+    displayHeight = display.height();
+    setupFont(u8Display, u8g2_font_helvB10_te);
+    lineHeight = u8Display.getFontAscent() + abs(u8Display.getFontDescent());
+    Serial.print("Ascent: "); Serial.print(u8Display.getFontAscent());
+    Serial.print("Descent: "); Serial.print(u8Display.getFontDescent());
+    Serial.print("Line: "); Serial.println(lineHeight);
+
+    display.fillRoundRect(5, 5, displayWidth-10, displayHeight-10, 10, GxEPD_BLACK);
+    display.fillRoundRect(8, 8, displayWidth-16, displayHeight-16, 10, GxEPD_WHITE);
+    u8Display.setCursor(displayWidth/4, displayHeight/2);
+    u8Display.println("Helló, Szent József");
+    u8Display.setCursor(displayWidth/4, displayHeight/2 + lineHeight);
+    u8Display.println(" Hackathon v2.0");
     display.update();
 }
 
-
-void loop()
-{
+void loop() {
 }
-
-
-
-void LilyGo_logo(void)
-{
-    display.setRotation(0);
-    display.fillScreen(GxEPD_WHITE);
-    display.drawExampleBitmap(BitmapExample1, 0, 0, GxEPD_WIDTH, GxEPD_HEIGHT, GxEPD_BLACK);
-    display.update();
-}
-
