@@ -78,3 +78,4 @@ dkms.conf
 
 # End of https://www.toptal.com/developers/gitignore/api/c,c++
 .vscode/c_cpp_properties.json
+src/ostyamerleg_client/config.h
