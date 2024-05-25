@@ -36,12 +36,12 @@ void setupFont(U8G2_FOR_ADAFRUIT_GFX& u8Display, const uint8_t* font) {
 }
 
 void setup(void) {
-    Serial.begin(115200);
+    Serial.begin(115200);  // enable diagnostic output on Serial
     Serial.println();
     Serial.println("setup");
 
     SPI.begin(EPD_SCLK, EPD_MISO, EPD_MOSI);
-    display.init();  // enable diagnostic output on Serial
+    display.init();
     u8Display.begin(display);
 
     Serial.println("setup done");
