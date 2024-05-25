@@ -1,5 +1,7 @@
 # Okostemplom E-Ink kijelző
 
+![Példaeszköz](lilygo_readme_example.jpg)
+
 Projektek gyűjteménye E-Ink kijelzők templom körüli felhasználásra.
 
 ## Jelenleg használt eszközök
